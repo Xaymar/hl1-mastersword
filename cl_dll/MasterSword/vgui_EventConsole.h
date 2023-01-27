@@ -92,7 +92,7 @@ public:
 		int ScrollClientWidth = m_ScrollPanel->getWide() - m_ScrollBarWidth;
 
 		//Create the Text lines
-		foreach( i, EVENTCON_MAXLINES )
+		 for (int i = 0; i < EVENTCON_MAXLINES; i++) 
 		{
 			m_Line[i] = new EventConsoleText( 0, 0, ScrollClientWidth, EVENTCON_LINE_SIZE_Y, NULL );
 			if( TextFont ) 
@@ -155,7 +155,7 @@ public:
 			int WrapPos = -1;
 			int WrapLength = -1;
 			bool SkipChar = false;
-			foreach( c, strlen(Text) )
+			 for (int c = 0; c < strlen(Text); c++) 
 			{
 				strncpy( ctemp, Text, c+1 );
 				ctemp[c+1] = 0;
@@ -207,7 +207,7 @@ public:
 		if( m_DynamicWidth )
 		{
 			w = 0;
- 			foreach( i, m_VisibleLines )
+ 			 for (int i = 0; i < m_VisibleLines; i++) 
 			{
 				int idx = m_ActiveLine - i;
 				int linewidth = min( m_Line[idx]->m_TextWidth, m_Line[idx]->getWide() );

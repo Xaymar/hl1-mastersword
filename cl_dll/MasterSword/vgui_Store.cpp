@@ -175,7 +175,7 @@ CStoreMenuPanel::CStoreMenuPanel(int iTrans, int iRemoveMe, int x,int y,int wide
 		pNameLabel->setContentAlignment( vgui::Label::a_west );
 		pNameLabel->setText(Localized(g_StoreText[i].Title));
 
-		sprintf( sz, Localized(g_StoreText[i].Desc), "NPC" );
+		 _snprintf(sz, sizeof(sz),  Localized(g_StoreText[i].Desc),  "NPC" );
 
 		#define CLASSMENU_WINDOW_TEXT_X			XRES(150)
 		#define CLASSMENU_WINDOW_TEXT_Y			YRES(80)
@@ -205,14 +205,14 @@ void CStoreMenuPanel::Update()
 	char sz[256];
 	int width, height;
 	pTitleLabel->setText( "%s's Shop", CStorePanel::StoreVendorName.c_str() );
-	foreach( i, STORE_BUTTONS )
+	 for (int i = 0; i < STORE_BUTTONS; i++) 
 	{
 		//Don't show buttons if not activated
 		m_pButtons[i]->setVisible( false );
 		if( !i && !(CStorePanel::iStoreBuyFlags & STORE_BUY) ) continue;
 		else if( (i==1) && !(CStorePanel::iStoreBuyFlags & STORE_SELL) ) continue;
 
-		sprintf( sz, Localized(g_StoreText[i].Desc), CStorePanel::StoreVendorName.c_str() );
+		 _snprintf(sz, sizeof(sz),  Localized(g_StoreText[i].Desc),  CStorePanel::StoreVendorName.c_str() );
 		pTextWindow[i]->setText( sz );
 		pTextWindow[i]->getTextImage()->getTextSizeWrapped( width, height );
 		pTextWindow[i]->setSize( width, height );

@@ -122,7 +122,6 @@ public:
 	}
 	~CAction_SelectOption( )
 	{
-		int stop = 0;
 		m_pPanel = NULL;
 	}
 
@@ -181,7 +180,7 @@ public:
 			m_NewChar.Gender = m_Value;
 			m_NewChar.Name = m_pPanel->Gender_Name;
 
-			foreach( i, RACEPANEL_MAINBTNS )
+			 for (int i = 0; i < RACEPANEL_MAINBTNS; i++) 
 			{
 				m_pPanel->Race_CharEnts[i].SetActive( true );
 				m_pPanel->Race_CharEnts[i].m_Gender = (gender_e)m_Value;
@@ -501,7 +500,7 @@ CNewCharacterPanel::CNewCharacterPanel( int iTrans, int iRemoveMe, int x, int y,
 		Choose_CharLabel[i][1] = new MSLabel( m_ChoosePanel, "", ix, iy, CHOOSE_BTNWIDTH, CHOOSE_CHARLABELSIZEY, MSLabel::a_center );
 		iy += Choose_CharLabel[i][1]->getTall();
 
-		foreach( n, 2 )
+		 for (int n = 0; n < 2; n++) 
 		{
 			//Labels - Name & map info
 			Choose_CharLabel[i][n]->setFont( g_FontSml );
@@ -598,7 +597,7 @@ CNewCharacterPanel::CNewCharacterPanel( int iTrans, int iRemoveMe, int x, int y,
 
 	dbg( "Init Gender Panel" );
 	StartX = GetCenteredItemX( m_ChoosePanel->getWide(), CHOOSE_BTNWIDTH, 2, XRES(32) );
-	foreach( i, GENDERPANEL_MAINBTNS )
+	 for (int i = 0; i < GENDERPANEL_MAINBTNS; i++) 
 	{
 		int ix = StartX + i * CHOOSE_BTNWIDTH + i * CHOOSE_BTNSPACERX, iy = CHOOSE_BTNY + CHOOSE_CHARHANDLING_H;
 		//int ix = StartX + i * CHOOSE_BTNWIDTH + i * CHOOSE_BTNSPACERX, iy = GENDER_BTNY;
@@ -623,7 +622,7 @@ CNewCharacterPanel::CNewCharacterPanel( int iTrans, int iRemoveMe, int x, int y,
 	Race_MainLabel->SetBGColorRGB( Color_Transparent );
  
 	StartX = GetCenteredItemX( m_ChoosePanel->getWide(), CHOOSE_BTNWIDTH, RACEPANEL_MAINBTNS, XRES(32) );
-	foreach( i, RACEPANEL_MAINBTNS )
+	 for (int i = 0; i < RACEPANEL_MAINBTNS; i++) 
 	{
 		int ix = StartX + (i * (CHOOSE_BTNWIDTH + CHOOSE_BTNSPACERX));
 		int iy = CHOOSE_BTNY + CHOOSE_CHARHANDLING_H;
@@ -651,7 +650,7 @@ CNewCharacterPanel::CNewCharacterPanel( int iTrans, int iRemoveMe, int x, int y,
 	dbg( msstring("Init Weapon Buttons (") + (int)WEAPONPANEL_MAINBTNS + ")" );
 	StartX = GetCenteredItemX( m_ChoosePanel->getWide(), WEAPON_BTN_SIZEX, 3, CHOOSE_BTNSPACERX );
 	int WeaponPanelSizeY = m_WeaponPanel->getTall( );
-	foreach( i, WEAPONPANEL_MAINBTNS )
+	 for (int i = 0; i < WEAPONPANEL_MAINBTNS; i++) 
 	{
 		if( i >= WEAPONPANEL_MAINBTNMAX )
 			break;							//Max of 9 starting weapon choices
@@ -743,25 +742,25 @@ void CNewCharacterPanel::Update( )
 	m_WeaponPanel->setVisible( false );
 
 	char cTemp[128], cTemp2[512];
-	strcpy( cTemp2, MSGlobals::MapName );
+	 strncpy(cTemp2,  MSGlobals::MapName, sizeof(cTemp2) );
 	cTemp2[0] = toupper(cTemp2[0]);
 
-	sprintf( cTemp, Localized("#CHOOSECHAR_ENTERING"), cTemp2 );		//Entering: <mapname>
+	_snprintf(cTemp, sizeof(cTemp), Localized("#CHOOSECHAR_ENTERING"), cTemp2);		//Entering: <mapname>
 	Choose_MainLabel->setText( cTemp );
 
 	if( MSGlobals::ServerSideChar )
 	{
 		cTemp2[0] = 0;
-		if( MSGlobals::IsLanGame ) sprintf( cTemp2, "\n%s", Localized("#CHOOSECHAR_LAN") );
+		if (MSGlobals::IsLanGame) _snprintf(cTemp2, sizeof(cTemp2), "\n%s", Localized("#CHOOSECHAR_LAN"));
 		if( ChooseChar_Interface::CentralServer )
 		{
 			if( ChooseChar_Interface::CentralOnline )
-				sprintf( cTemp2, "\n%s\n%s", Localized("#CHOOSECHAR_CENTRALNETWORK"), ChooseChar_Interface::CentralNetworkName.c_str() );
+				 _snprintf(cTemp2, sizeof(cTemp2),  "\n%s\n%s",  Localized("#CHOOSECHAR_CENTRALNETWORK"),  ChooseChar_Interface::CentralNetworkName.c_str() );
 			else
-				sprintf( cTemp2, "\n%s", Localized("#CHOOSECHAR_CENTRALNETWORK_DOWN") );
+				 _snprintf(cTemp2, sizeof(cTemp2),  "\n%s",  Localized("#CHOOSECHAR_CENTRALNETWORK_DOWN") );
 		}
 
-		sprintf( cTemp, "%s%s", Localized("#CHOOSECHAR_SERVER"), cTemp2 );
+		 _snprintf(cTemp, sizeof(cTemp),  "%s%s",  Localized("#CHOOSECHAR_SERVER"),  cTemp2 );
 		Choose_CharHandlingLabel->setText( cTemp );								//Character are stored on the server
 	}
 	else
@@ -773,7 +772,7 @@ void CNewCharacterPanel::Update( )
 		m_ChoosePanel->setVisible( true );
 		iButtons = CHOOSEPANEL_MAINBTNS;
 
-		foreach( i, iButtons )
+		 for (int i = 0; i < iButtons; i++) 
 		{
 			//Only certain fields can be assumed valid in this savedata
 			//If client-side characters - all savedata_t info is valid;
@@ -824,9 +823,9 @@ void CNewCharacterPanel::Update( )
 				CharSlot.MapName[0] = toupper(CharSlot.MapName[0]);
 				CharSlot.NextMap[0] = toupper(CharSlot.NextMap[0]);
 				if( CharSlot.NextMap[0] )
-					sprintf( cMapInfo, "%s -> %s", CharSlot.MapName.c_str(), CharSlot.NextMap.c_str() );
+					 _snprintf(cMapInfo, sizeof(cMapInfo),  "%s -> %s",  CharSlot.MapName.c_str(),  CharSlot.NextMap.c_str() );
 				else
-					sprintf( cMapInfo, "At %s", CharSlot.MapName.c_str() );
+					 _snprintf(cMapInfo, sizeof(cMapInfo),  "At %s",  CharSlot.MapName.c_str() );
 				Choose_CharLabel[i][1]->setText( cMapInfo );
 				Choose_DeleteChar[i]->setVisible( true );
 
@@ -908,7 +907,7 @@ void CNewCharacterPanel::Update( )
 		iButtons = RACEPANEL_MAINBTNS;
 		break;
 	case STG_CHOOSEWEAPON:
-		foreach( i, WEAPONPANEL_MAINBTNS )
+		 for (int i = 0; i < WEAPONPANEL_MAINBTNS; i++) 
 			Weapon_MainBtnImg[i]->LoadImg( );
 		m_WeaponPanel->setVisible( true );
 		m_BackBtn->setVisible( true );
@@ -946,7 +945,7 @@ void CNewCharacterPanel::Gender_SelectItem( int Btn )
 	Gender_CharEnts[0].m_Gender = GENDER_MALE; //Thothie FEB2011_02 gender bender fixes
 	Gender_CharEnts[1].m_Gender = GENDER_FEMALE; //Thothie FEB2011_02 gender bender fixes
 
-	foreach( i, GENDERPANEL_MAINBTNS )
+	 for (int i = 0; i < GENDERPANEL_MAINBTNS; i++) 
 	{
 		Gender_CharEnts[i].SetActive( Btn == 1 ? true : false );
 		Gender_MainBtn[i]->setEnabled( Btn == 1 ? true : false );
@@ -1009,20 +1008,20 @@ void CNewCharacterPanel::Close( void )
 		return;
 	}*/
 
-	foreach( i, CHOOSEPANEL_MAINBTNS )
+	 for (int i = 0; i < CHOOSEPANEL_MAINBTNS; i++) 
 	{
 		CRenderChar &CharEnt = m_CharEnts[i];
 		CharEnt.UnRegister( );
 	}
 
-	foreach( i, GENDERPANEL_MAINBTNS )
+	 for (int i = 0; i < GENDERPANEL_MAINBTNS; i++) 
 	{
 		CRenderChar &CharEnt = Gender_CharEnts[i];
 		CharEnt.UnRegister( );
 	}
 
 	// MIB FEB2015_21 [RACE_MENU] - UnRegister Race Menu models
-	foreach( i, RACEPANEL_MAINBTNS )
+	 for (int i = 0; i < RACEPANEL_MAINBTNS; i++) 
 	{
 		CRenderChar &CharEnt = Race_CharEnts[i];
 		CharEnt.UnRegister( );
@@ -1058,7 +1057,7 @@ void CNewCharacterPanel::Close( void )
 
 	m_WeaponPanel->removeAllChildren( );
 	//delete m_WeaponPanel;
-	Foreach( i, (signed)WEAPONPANEL_MAINBTNS )
+	for (i = 0; i < (signed)WEAPONPANEL_MAINBTNS; i++)
 	{
 		if( Weapon_MainBtn[i] ) Weapon_MainBtn[i]->removeActionSignals( );
 		//if( Weapon_MainActionSig[i] ) delete Weapon_MainActionSig[i];
@@ -1069,7 +1068,7 @@ void CNewCharacterPanel::Close( void )
 	//gViewPort->HideTopMenu( );
 
 	//Remove from menu list
-	foreach( i, gViewPort->m_Menus.size() )
+	 for (int i = 0; i < gViewPort->m_Menus.size(); i++) 
 		if( gViewPort->m_Menus[i] == this ) 
 			{ gViewPort->m_Menus.erase( i ); break; }
 
@@ -1135,7 +1134,7 @@ void CNewCharacterPanel::Open( void )
 	CMenuPanel::Open();
 
 	dbg( "Init Main 3D models" );
-	foreach( i, CHOOSEPANEL_MAINBTNS )
+	 for (int i = 0; i < CHOOSEPANEL_MAINBTNS; i++) 
 	{
 		CRenderChar &CharEnt = m_CharEnts[i];
 		CharEnt.m_Stage = STG_CHOOSECHAR;
@@ -1144,7 +1143,7 @@ void CNewCharacterPanel::Open( void )
 	}
 
 	dbg( "Init Gender 3D models" );
-	foreach( i, GENDERPANEL_MAINBTNS )
+	 for (int i = 0; i < GENDERPANEL_MAINBTNS; i++) 
 	{
 		CRenderChar &CharEnt = Gender_CharEnts[i];
 		CharEnt.m_Stage = STG_CHOOSEGENDER;
@@ -1153,7 +1152,7 @@ void CNewCharacterPanel::Open( void )
 	}
 
 	dbg( "Init Race 3D models" );
-	foreach( i, RACEPANEL_MAINBTNS )  // MIB FEB2015_21 [RACE_MENU] - Intialize Race Menu models
+	for (int i = 0; i < RACEPANEL_MAINBTNS; i++) // MIB FEB2015_21 [RACE_MENU] - Intialize Race Menu models
 	{
 		CRenderChar &CharEnt = Race_CharEnts[i];
 		CharEnt.m_Stage = STG_CHOOSERACE;
@@ -1264,7 +1263,7 @@ int __MsgFunc_CharInfo(const char *pszName, int iSize, void *pbuf)
 		}
 
 		int GearItems = READ_SHORT( );
-		foreach( i, GearItems )
+		 for (int i = 0; i < GearItems; i++) 
 		{
 			gearinfo_t GearInfo;
 			GearInfo.Flags = READ_BYTE( );
@@ -1321,7 +1320,7 @@ void CRenderChar::Init( int Idx, msstring model )
 	
 	m_Gender = GENDER_MALE;
 
-	foreach( i, 4 )
+	 for (int i = 0; i < 4; i++) 
 		m_Ent.latched.prevcontroller[i] = m_Ent.curstate.controller[i] = 127;
  	m_Ent.curstate.gaitsequence = 0;
 	m_TimeRandomIdle = gpGlobals->time + RANDOM_FLOAT(TIME_MINIDLE,TIME_MAXIDLE);
@@ -1367,11 +1366,10 @@ void CRenderChar::Render( )
 		m_GearItems.clearitems( );
 		m_Gear.clearitems( );
 		uint BodyParts[HUMAN_BODYPARTS] = { 0 };
-		foreach( i, player.m_CharInfo[m_Idx].GearInfo.size( ) )
+		 for (int i = 0; i < player.m_CharInfo[m_Idx].GearInfo.size(); i++) 
 		{
 			gearinfo_t &GearInfo = player.m_CharInfo[m_Idx].GearInfo[i];
-
-			CGenericItem *pItem = ::msnew CGenericItem;
+			CGenericItem *pItem = ::msnew CGenericItem();
 			cl_entity_t &ItemEnt = GearItemEntity( *pItem );
 
 			//ItemEnt = m_Ent;
@@ -1383,7 +1381,7 @@ void CRenderChar::Render( )
 			ItemEnt.curstate.body = GearInfo.Body;
 			ItemEnt.PlayAnim( GearInfo.Anim );
 
-			foreach( i, HUMAN_BODYPARTS )
+			 for (int i = 0; i < HUMAN_BODYPARTS; i++) 
 				if( FBitSet( GearInfo.Flags, (1<<i) ) )
 					BodyParts[i] = 1;
 
@@ -1403,9 +1401,10 @@ void CRenderChar::Render( )
 			SetBits( ItemEnt.curstate.colormap, MSRDR_LIGHT_NORMAL );
 
 			m_GearItems.add( *pItem );
-			delete pItem;
+			pItem->SUB_Remove();
+			//delete pItem; ERROR ERROR ?!?!
 		}
-		foreach( i, m_GearItems.size() )
+		 for (int i = 0; i < m_GearItems.size(); i++) 
 			m_Gear.add( &m_GearItems[i] );
 	}
 
@@ -1472,7 +1471,7 @@ void CRenderChar::PlayAttnAnim( )
 	m_ItemInHand = false;
 
 	if( m_Stage == STG_CHOOSECHAR )
-		foreach( i, player.m_CharInfo[m_Idx].GearInfo.size( ) )
+		 for (int i = 0; i < player.m_CharInfo[m_Idx].GearInfo.size(); i++) 
 			if( !FBitSet( player.m_CharInfo[m_Idx].GearInfo[i].Flags,GEARFL_WEARING ) ) { m_ItemInHand = true; break; }
 
 
@@ -1565,7 +1564,6 @@ CRenderSpawnbox::~CRenderSpawnbox( )
 {
 	if( !m_Done )
 	{
-		int stop = 0;
 		//This is bad - the ent gets deallocated before it gets unregistered
 		MSErrorConsoleText( "~CRenderChar()", "Deallocated improperly" );
 	}

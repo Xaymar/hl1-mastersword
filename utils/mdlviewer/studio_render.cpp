@@ -1,9 +1,9 @@
 /***
 *
 *	Copyright (c) 1996-2002, Valve LLC. All rights reserved.
-*	
-*	This product contains software technology licensed from Id 
-*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc. 
+*
+*	This product contains software technology licensed from Id
+*	Software, Inc. ("Id Technology").  Id Technology (c) 1996 Id Software, Inc.
 *	All Rights Reserved.
 *
 ****/
@@ -55,7 +55,7 @@ void StudioModel::CalcBoneAdj( )
 	int					i, j;
 	float				value;
 	mstudiobonecontroller_t *pbonecontroller;
-	
+
 	pbonecontroller = (mstudiobonecontroller_t *)((byte *)m_pstudiohdr + m_pstudiohdr->bonecontrollerindex);
 
 	for (j = 0; j < m_pstudiohdr->numbonecontrollers; j++)
@@ -68,7 +68,7 @@ void StudioModel::CalcBoneAdj( )
 			{
 				value = m_controller[i] * (360.0/256.0) + pbonecontroller[j].start;
 			}
-			else 
+			else
 			{
 				value = m_controller[i] / 255.0;
 				if (value < 0) value = 0;
@@ -187,7 +187,7 @@ void StudioModel::CalcBonePosition( int frame, float s, mstudiobone_t *pbone, ms
 		if (panim->offset[j] != 0)
 		{
 			panimvalue = (mstudioanimvalue_t *)((byte *)panim + panim->offset[j]);
-			
+
 			k = frame;
 			// find span of values that includes the frame we want
 			while (panimvalue->num.total <= k)
@@ -243,7 +243,7 @@ void StudioModel::CalcRotations ( vec3_t *pos, vec4_t *q, mstudioseqdesc_t *pseq
 	CalcBoneAdj( );
 
 	pbone		= (mstudiobone_t *)((byte *)m_pstudiohdr + m_pstudiohdr->boneindex);
-	for (i = 0; i < m_pstudiohdr->numbones; i++, pbone++, panim++) 
+	for (i = 0; i < m_pstudiohdr->numbones; i++, pbone++, panim++)
 	{
 		CalcBoneQuaternion( frame, s, pbone, panim, q[i] );
 		CalcBonePosition( frame, s, pbone, panim, pos[i] );
@@ -265,7 +265,7 @@ mstudioanim_t * StudioModel::GetAnim( mstudioseqdesc_t *pseqdesc )
 
 	if (pseqdesc->seqgroup == 0)
 	{
-		return (mstudioanim_t *)((byte *)m_pstudiohdr + pseqgroup->data + pseqdesc->animindex);
+		return (mstudioanim_t *)((byte *)m_pstudiohdr + pseqgroup->unused1 + pseqdesc->animindex);
 	}
 
 	return (mstudioanim_t *)((byte *)m_panimhdr[pseqdesc->seqgroup] + pseqdesc->animindex);
@@ -384,7 +384,7 @@ void StudioModel::SetUpBones ( void )
 
 		if (pbones[i].parent == -1) {
 			memcpy(g_bonetransform[i], bonematrix, sizeof(float) * 12);
-		} 
+		}
 		else {
 			R_ConcatTransforms (g_bonetransform[pbones[i].parent], bonematrix, g_bonetransform[i]);
 		}
@@ -408,8 +408,8 @@ void StudioModel::Lighting (float *lv, int bone, int flags, vec3_t normal)
 	if (flags & STUDIO_NF_FLATSHADE)
 	{
 		illum += g_shadelight * 0.8;
-	} 
-	else 
+	}
+	else
 	{
 		float r;
 		lightcos = DotProduct (normal, g_blightvec[bone]); // -1 colinear, 1 opposite
@@ -423,15 +423,15 @@ void StudioModel::Lighting (float *lv, int bone, int flags, vec3_t normal)
 		if (r <= 1.0) r = 1.0;
 
 		lightcos = (lightcos + (r - 1.0)) / r; 		// do modified hemispherical lighting
-		if (lightcos > 0.0) 
+		if (lightcos > 0.0)
 		{
-			illum -= g_shadelight * lightcos; 
+			illum -= g_shadelight * lightcos;
 		}
 		if (illum <= 0)
 			illum = 0;
 	}
 
-	if (illum > 255) 
+	if (illum > 255)
 		illum = 255;
 	*lv = illum / 255.0;	// Light from 0 to 1.0
 }
@@ -573,8 +573,8 @@ void StudioModel::DrawModel( )
 	SetUpBones ( );
 
 	SetupLighting( );
-	
-	for (i=0 ; i < m_pstudiohdr->numbodyparts ; i++) 
+
+	for (i=0 ; i < m_pstudiohdr->numbodyparts ; i++)
 	{
 		SetupModel( i );
 		DrawPoints( );
@@ -631,7 +631,7 @@ void StudioModel::DrawPoints ( )
 //
 
 	lv = (float *)g_pvlightvalues;
-	for (j = 0; j < m_pmodel->nummesh; j++) 
+	for (j = 0; j < m_pmodel->nummesh; j++)
 	{
 		int flags;
 		flags = ptexture[pskinref[pmesh[j].skinref]].flags;
@@ -651,7 +651,7 @@ void StudioModel::DrawPoints ( )
 
 	glCullFace(GL_FRONT);
 
-	for (j = 0; j < m_pmodel->nummesh; j++) 
+	for (j = 0; j < m_pmodel->nummesh; j++)
 	{
 		float s, t;
 		short		*ptricmds;
@@ -683,7 +683,7 @@ void StudioModel::DrawPoints ( )
 				{
 					// FIX: put these in as integer coords, not floats
 					glTexCoord2f(g_chrome[ptricmds[1]][0]*s, g_chrome[ptricmds[1]][1]*t);
-					
+
 					lv = g_pvlightvalues[ptricmds[1]];
 					glColor4f( lv[0], lv[1], lv[2], 1.0 );
 
@@ -691,9 +691,9 @@ void StudioModel::DrawPoints ( )
 					glVertex3f(av[0], av[1], av[2]);
 				}
 				glEnd( );
-			}	
-		} 
-		else 
+			}
+		}
+		else
 		{
 			while (i = *(ptricmds++))
 			{
@@ -712,7 +712,7 @@ void StudioModel::DrawPoints ( )
 				{
 					// FIX: put these in as integer coords, not floats
 					glTexCoord2f(ptricmds[2]*s, ptricmds[3]*t);
-					
+
 					lv = g_pvlightvalues[ptricmds[1]];
 					glColor4f( lv[0], lv[1], lv[2], 1.0 );
 
@@ -720,7 +720,7 @@ void StudioModel::DrawPoints ( )
 					glVertex3f(av[0], av[1], av[2]);
 				}
 				glEnd( );
-			}	
+			}
 		}
 	}
 }

@@ -241,7 +241,7 @@ class CheckButton : public CommandButton
 public:
 	CheckButton( char *CVARName, int x, int y, int wide, int tall ) : CommandButton( "", x, y, wide, tall, true )
 	{
-		strcpy( m_CVARName, CVARName );
+		 strncpy(m_CVARName,  CVARName, sizeof(m_CVARName) );
 		m_CVARName[255] = 0;
 		addActionSignal( new Action_ClickCheck( this ) );
 	}
@@ -297,7 +297,7 @@ class CImageDelayed : public CImageLabel
 {
 public:
 	msstring m_ImageName;
-	HSPRITE m_SpriteHandle;
+	HLSPRITE m_SpriteHandle;
 	int m_imgw, m_imgh;
 	wrect_t m_Size;
 	int m_Frame;		//Current frame
@@ -440,8 +440,8 @@ public:
 		//m_MessageLabel = new MSLabel( this, "", TEXT_START, 0, getWide() - TEXT_START - XRES(3), h, MSLabel::a_west );
 		m_MessageLabel = new MSLabel( this, "", 0, 0, getWide() - XRES(3), h, MSLabel::a_west );
 		m_MessageLabel->setBorder( new LineBorder( 1, Color(255,0,0,255) ) );
-	
-		m_Line = new VGUI_Line( 0, h-YRES(2), m_MessageLabel->getWide(), 1, true, COLOR(128,128,128,128), this );
+		COLOR vColor = COLOR(128, 128, 128, 128);
+		m_Line = new VGUI_Line(0, h - YRES(2), m_MessageLabel->getWide(), 1, true, vColor, this);
 		m_MaxLetters = 120;
 	}
 
@@ -467,7 +467,7 @@ public:
 		int w, h;
 		m_MessageLabel->getTextSize( w, h );
 		x += w + 1;
-		foreach( i, m_FadeLabels.size( ) ) { m_FadeLabels[i]->getTextSize( w, h ); x += w; }
+		for (int i = 0; i < m_FadeLabels.size(); i++) { m_FadeLabels[i]->getTextSize(w, h); x += w; }
 		m_FadeLabels.add( new VGUI_FadeText( this, 0.6f, Letter, x, y, XRES(16), m_MessageLabel->getTall() ) );
 		m_Message += Letter;
 
@@ -485,7 +485,7 @@ public:
 		m_VisibleMsg = m_Message;
 		m_MessageLabel->setText( m_Message );
 		int sz =  m_FadeLabels.size();
-		foreach( i, sz )
+		 for (int i = 0; i < sz; i++) 
 		{
 			m_FadeLabels[0]->setParent( NULL );
 			delete m_FadeLabels[0];
@@ -502,7 +502,7 @@ public:
 
 	void Update( )
 	{
-		foreach( i, m_FadeLabels.size( ) )
+		 for (int i = 0; i < m_FadeLabels.size(); i++) 
 		{
 			VGUI_FadeText *pFadeText = m_FadeLabels[i];
 			pFadeText->Update( );

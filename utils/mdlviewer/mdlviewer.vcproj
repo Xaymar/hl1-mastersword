@@ -3,8 +3,8 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="mdlviewer"
-	SccProjectName="&quot;$/SDKSrc/Tools/utils/mdlviewer&quot;, AIHBAAAA"
-	SccLocalPath=".">
+	ProjectGUID="{641352F0-B0FE-403C-8C06-6E77A47C9430}"
+	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
 			Name="Win32"/>
@@ -12,45 +12,33 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory="Debug"
+			IntermediateDirectory="Debug"
 			ConfigurationType="1"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\common,..\..\common"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\Debug/mdlviewer.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
-				BrowseInformation="1"
+				UsePrecompiledHeader="3"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
-				DebugInformationFormat="4"
-				CompileAs="0"/>
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="glu32.lib odbc32.lib odbccp32.lib opengl32.lib glut32.lib"
-				OutputFile=".\Debug/mdlviewer.exe"
-				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
+				OutputFile="$(OutDir)/mdlviewer.exe"
+				LinkIncremental="2"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/mdlviewer.pdb"
-				SubSystem="1"
+				ProgramDatabaseFile="$(OutDir)/mdlviewer.pdb"
+				SubSystem="2"
 				TargetMachine="1"/>
 			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".\Debug/mdlviewer.tlb"
-				HeaderFileName=""/>
+				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -58,9 +46,7 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"/>
+				Name="VCResourceCompilerTool"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
@@ -74,44 +60,31 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
+			OutputDirectory="Release"
+			IntermediateDirectory="Release"
 			ConfigurationType="1"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE"
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\common,..\..\common"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				StringPooling="TRUE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
 				RuntimeLibrary="4"
-				EnableFunctionLevelLinking="TRUE"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\Release/mdlviewer.pch"
-				AssemblerListingLocation=".\Release/"
-				ObjectFile=".\Release/"
-				ProgramDataBaseFileName=".\Release/"
+				UsePrecompiledHeader="3"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"
-				CompileAs="0"/>
+				Detect64BitPortabilityProblems="TRUE"
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib opengl32.lib glu32.lib glut32.lib"
-				OutputFile=".\Release/mdlviewer.exe"
+				OutputFile="$(OutDir)/mdlviewer.exe"
 				LinkIncremental="1"
-				SuppressStartupBanner="TRUE"
-				ProgramDatabaseFile=".\Release/mdlviewer.pdb"
-				SubSystem="1"
+				GenerateDebugInformation="TRUE"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
 				TargetMachine="1"/>
 			<Tool
-				Name="VCMIDLTool"
-				TypeLibraryName=".\Release/mdlviewer.tlb"
-				HeaderFileName=""/>
+				Name="VCMIDLTool"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
@@ -119,9 +92,7 @@
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"/>
+				Name="VCResourceCompilerTool"/>
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
@@ -139,106 +110,58 @@
 	<Files>
 		<Filter
 			Name="Source Files"
-			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
-				RelativePath="..\common\mathlib.c">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""/>
-				</FileConfiguration>
+				RelativePath=".\mdlviewer.cpp">
 			</File>
 			<File
-				RelativePath="mdlviewer.cpp">
+				RelativePath=".\stdafx.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
+						UsePrecompiledHeader="1"/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="studio_render.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="studio_utils.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""/>
+						UsePrecompiledHeader="1"/>
 				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl">
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath="..\common\mathlib.h">
+				RelativePath=".\mdlviewer.h">
 			</File>
 			<File
-				RelativePath="mdlviewer.h">
+				RelativePath=".\Resource.h">
+			</File>
+			<File
+				RelativePath=".\stdafx.h">
 			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
-			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
+			<File
+				RelativePath=".\mdlviewer.ico">
+			</File>
+			<File
+				RelativePath=".\mdlviewer.rc">
+			</File>
+			<File
+				RelativePath=".\small.ico">
+			</File>
 		</Filter>
+		<File
+			RelativePath=".\ReadMe.txt">
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

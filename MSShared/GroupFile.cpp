@@ -1,58 +1,59 @@
 #ifdef _WIN32
- #include "windows.h"
+#include "windows.h"
 #else
-        #include <ctype.h>
-        #include <string.h>
-        #include <stdio.h>
-        #include <sys/stat.h>
-        #include <linux/sys.h>
+#include <ctype.h>
+#include <string.h>
+#include <stdio.h>
+#include <sys/stat.h>
+#include <linux/sys.h>
 
 //      typedef void *HANDLE;
-        typedef unsigned long DWORD;
-	typedef unsigned int uint;
-	typedef short int sint;
+typedef unsigned long DWORD;
+typedef unsigned int uint;
+typedef short int sint;
 
-        #define INVALID_HANDLE_VALUE    ((HANDLE)((long)-1))
-        #define GENERIC_READ            (0x80000000L)
-        #define GENERIC_WRITE           (0x40000000L)
-        #define FILE_FLAG_SEQUENTIAL_SCAN       0x08000000
-        #define CREATE_ALWAYS           2
-        #define OPEN_EXISTING           3
-        #define OPEN_ALWAYS             4
-        #define FILE_SHARE_READ         0x00000001
-        #define FILE_SHARE_WRITE        0x00000002
-        #define FILE_BEGIN              0
+#define INVALID_HANDLE_VALUE ((HANDLE)((long)-1))
+#define GENERIC_READ (0x80000000L)
+#define GENERIC_WRITE (0x40000000L)
+#define FILE_FLAG_SEQUENTIAL_SCAN 0x08000000
+#define CREATE_ALWAYS 2
+#define OPEN_EXISTING 3
+#define OPEN_ALWAYS 4
+#define FILE_SHARE_READ 0x00000001
+#define FILE_SHARE_WRITE 0x00000002
+#define FILE_BEGIN 0
 
-
-	FHANDLE CreateFile( char* file, uint mode, uint fProps, void* nul, uint opAlways, uint fileAtts, void* devnul)
+FHANDLE CreateFile(char *file, uint mode, uint fProps, void *nul, uint opAlways, uint fileAtts, void *devnul)
+{
+	const char *modeStr;
+	// calculate the proper mode - read/write from start of file, read from start, or write from start
+	if (mode & GENERIC_READ)
 	{
-		const char* modeStr;
-		// calculate the proper mode - read/write from start of file, read from start, or write from start
-		if ( mode & GENERIC_READ ) {
-			if ( mode & GENERIC_WRITE )
-				modeStr = "r+";
-			else
-				modeStr = "r";
-		} else
-			modeStr = "w";
-		FHANDLE fh;
-		fh = fopen( file, modeStr );
-		return fh;
+		if (mode & GENERIC_WRITE)
+			modeStr = "r+";
+		else
+			modeStr = "r";
 	}
+	else
+		modeStr = "w";
+	FHANDLE fh;
+	fh = fopen(file, modeStr);
+	return fh;
+}
 
 //#undef CreateFile
 //#define CreateFile sys_CreateFile
 
-uint GetFileSize( FHANDLE file, int null )
+uint GetFileSize(FHANDLE file, int null)
 {
 	// save position
-	sint pos = ftell( file );
+	sint pos = ftell(file);
 	// go to end
-	fseek( file, 0, SEEK_END );
+	fseek(file, 0, SEEK_END);
 	// get size (position)
-	sint size = ftell( file );
+	sint size = ftell(file);
 	// return to previous position
-	fseek( file, pos, SEEK_SET );
+	fseek(file, pos, SEEK_SET);
 	return size;
 }
 
@@ -62,14 +63,17 @@ uint GetFileSize( FHANDLE file, int null )
 #include "GroupFile.h"
 #include "msfileio.h"
 //Deuplicated from msdebug.h
-#ifdef DEV_BUILD
-	void *operator new( size_t size, const char *pszSourceFile, int LineNum ); 
-	void operator delete( void *ptr, const char *pszSourceFile, int LineNum );
-	#define msnew new( __FILE__, __LINE__ )
+#ifdef NOT_HLDLL
+#define msnew new
+#elif DEV_BUILD
+void *operator new(size_t size, const char *pszSourceFile, int LineNum);
+void operator delete(void *ptr, const char *pszSourceFile, int LineNum);
+#define msnew new (__FILE__, __LINE__)
 #else
-	#define msnew new
+#define msnew new
 #endif
-void Print( char *szFmt, ... );
+
+void Print(char *szFmt, ...);
 
 //namespace GroupFile
 //{
@@ -77,69 +81,69 @@ void Print( char *szFmt, ... );
 //}
 
 //Groupfile... its just like a pakfile
-void CGroupFile::Open( char *pszFileName )
+void CGroupFile::Open(char *pszFileName)
 {
-	strcpy( m_FileName, pszFileName );
-	m_EntryList.clear( );
+	 strncpy(m_FileName,  pszFileName, sizeof(m_FileName) );
+	m_EntryList.clear();
 
 	CMemFile GroupFile;
-	if( GroupFile.ReadFromFile( m_FileName ) )
+	if (GroupFile.ReadFromFile(m_FileName))
 	{
 		CEncryptData1 Data;
-		Data.SetData( GroupFile.m_Buffer, GroupFile.GetFileSize() );
-		if( !Data.Decrypt( ) )
+		Data.SetData(GroupFile.m_Buffer, GroupFile.GetFileSize());
+		if (!Data.Decrypt())
 			return;
 		CMemFile DecryptedFile;
-		DecryptedFile.SetBuffer( Data.GetData( ), Data.GetDataSize() );
+		DecryptedFile.SetBuffer(Data.GetData(), Data.GetDataSize());
 
 		int HeaderEntries;
 
-		DecryptedFile.ReadInt( HeaderEntries );
+		DecryptedFile.ReadInt(HeaderEntries);
 		//Read headers
-		foreach( i, HeaderEntries )
+		for (int i = 0; i < HeaderEntries; i++)
 		{
 			cachedentry_t Entry;
-			DecryptedFile.Read( &Entry, sizeof(groupheader_t) );		//Read only the groupheader_t part.  The cachedentry_t part is not stored
+			DecryptedFile.Read(&Entry, sizeof(groupheader_t)); //Read only the groupheader_t part.  The cachedentry_t part is not stored
 			Entry.Data = NULL;
 
-			m_EntryList.add( Entry );
+			m_EntryList.add(Entry);
 		}
 
 		//Read existing data
-		foreach( i, m_EntryList.size() )
+		for (int i = 0; i < m_EntryList.size(); i++)
 		{
 			cachedentry_t &Entry = m_EntryList[i];
 
 			groupheader_t ReadEntry;
-			DecryptedFile.SetReadPtr( Entry.DataOfs );
+			DecryptedFile.SetReadPtr(Entry.DataOfs);
 			Entry.Data = msnew byte[Entry.DataSize];
-			DecryptedFile.Read( Entry.Data, Entry.DataSize );
+			DecryptedFile.Read(Entry.Data, Entry.DataSize);
 		}
 
 		m_IsOpen = true;
 	}
 }
 
-void CGroupFile::Close( )
+void CGroupFile::Close()
 {
-	foreach( i, m_EntryList.size() )
+	for (int i = 0; i < m_EntryList.size(); i++)
 	{
 		cachedentry_t &Entry = m_EntryList[i];
-		if( Entry.Data )
+		if (Entry.Data)
 			delete Entry.Data;
 		Entry.Data = NULL;
 	}
-	m_EntryList.clear( );
+	m_EntryList.clear();
 	m_IsOpen = false;
 }
 
 //You must call Flush() to actually write the entries
-bool CGroupFile::WriteEntry( const char *pszName, byte *pData, unsigned long DataSize )
+bool CGroupFile::WriteEntry(const char *pszName, byte *pData, unsigned long DataSize)
 {
 	msstring EntryName = pszName;
-	ReplaceChar( EntryName, '\\', '/' );
+	ReplaceChar(EntryName, '\\', '/');
 
-	DeleteEntry( EntryName );
+	DeleteEntry(EntryName);
 
 	/*CEncryptData1 Data;
 	Data.SetData( pData, DataSize );
@@ -152,22 +156,22 @@ bool CGroupFile::WriteEntry( const char *pszName, byte *pData, unsigned long Dat
 	Entry.DataSize = DataSize;
 
 	Entry.Data = msnew byte[Entry.DataSize];
-	memcpy( Entry.Data, pData, Entry.DataSize );
+	memcpy(Entry.Data, pData, Entry.DataSize);
 
 	//Data.GetData( Entry.Data );
-	m_EntryList.add( Entry );
+	m_EntryList.add(Entry);
 
 	return true;
 }
-bool CGroupFile::ReadEntry( const char *pszName, byte *pBuffer, unsigned long &DataSize )
-{		
+bool CGroupFile::ReadEntry(const char *pszName, byte *pBuffer, unsigned long &DataSize)
+{
 	msstring EntryName = pszName;
-	ReplaceChar( EntryName, '\\', '/' );
+	ReplaceChar(EntryName, '\\', '/');
 
-	foreach( i, m_EntryList.size() )
+	for (int i = 0; i < m_EntryList.size(); i++)
 	{
 		cachedentry_t &Entry = m_EntryList[i];
-		if( Entry.FileName != EntryName )
+		if (Entry.FileName != EntryName)
 			continue;
 
 		/*CEncryptData1 Data;
@@ -177,10 +181,10 @@ bool CGroupFile::ReadEntry( const char *pszName, byte *pBuffer, unsigned long &D
 		DataSize = Data.GetDataSize();
 		if( pBuffer ) memcpy( pBuffer, Data.GetData( ), DataSize );*/
 
-		if( pBuffer ) memcpy( pBuffer, Entry.Data, Entry.DataSize );
+		if (pBuffer)
+			memcpy(pBuffer, Entry.Data, Entry.DataSize);
 		DataSize = Entry.DataSize;
 
-		
 		return true;
 	}
 
@@ -205,7 +209,7 @@ bool CGroupFile::ReadEntry( const char *pszName, byte *pBuffer, unsigned long &D
 	{
 		if( !ReadFile( hFile, &groupHeader, sizeof(groupheader_t), &dwBytesRead, NULL ) )
 			{ CloseHandle( hFile );  return dwFailReturn; }
-		strcpy( pszMyString, pszName );
+		 strncpy(pszMyString,  pszName, sizeof(pszMyString) );
 		ReplaceChar( pszMyString, '/', '\\' );
 		if( !stricmp(groupHeader.FileName,pszMyString) )
 		{
@@ -219,16 +223,16 @@ bool CGroupFile::ReadEntry( const char *pszName, byte *pBuffer, unsigned long &D
 	delete pszMyString;
 	return (DWORD)-1;
 }*/
-bool CGroupFile::DeleteEntry( const char *pszName )
+bool CGroupFile::DeleteEntry(const char *pszName)
 {
-	foreach( i, m_EntryList.size() )
+	for (int i = 0; i < m_EntryList.size(); i++)
 	{
 		cachedentry_t &Entry = m_EntryList[i];
-		if( Entry.FileName == pszName )
+		if (Entry.FileName == pszName)
 		{
-			if( Entry.Data )
+			if (Entry.Data)
 				delete Entry.Data;
-			m_EntryList.erase( i );
+			m_EntryList.erase(i);
 			return true;
 		}
 	}
@@ -236,38 +240,38 @@ bool CGroupFile::DeleteEntry( const char *pszName )
 	return false;
 }
 
-void CGroupFile::Flush( )
+void CGroupFile::Flush()
 {
 	int TotalEntries = m_EntryList.size();
 	int TotalSize = sizeof(int);
-	foreach( i, TotalEntries )
+	for (int i = 0; i < TotalEntries; i++)
 		TotalSize += sizeof(groupheader_t) + m_EntryList[i].DataSize;
 
-	CMemFile GroupFile( TotalSize );
-	GroupFile.WriteInt( TotalEntries );										//[INT]
+	CMemFile GroupFile(TotalSize);
+	GroupFile.WriteInt(TotalEntries); //[INT]
 
 	int Offset = sizeof(int) + TotalEntries * sizeof(groupheader_t);
-	foreach( i, TotalEntries )
+	for (int i = 0; i < TotalEntries; i++)
 	{
 		cachedentry_t &Entry = m_EntryList[i];
 
 		groupheader_t &Header = Entry;
 		Header.DataOfs = Offset;
-		GroupFile.Write( &Header, sizeof(groupheader_t) );					//[X groupheader_t]
+		GroupFile.Write(&Header, sizeof(groupheader_t)); //[X groupheader_t]
 		Offset += Header.DataSize;
 	}
 
-	foreach( i, TotalEntries )
+	for (int i = 0; i < TotalEntries; i++)
 	{
 		cachedentry_t &Entry = m_EntryList[i];
-		GroupFile.Write( Entry.Data, Entry.DataSize );						//[X data]
+		GroupFile.Write(Entry.Data, Entry.DataSize); //[X data]
 	}
 
 	//Encrypt whole file
 	CEncryptData1 Data;
-	Data.SetData( GroupFile.m_Buffer, GroupFile.GetFileSize() );
-	Data.Encrypt( );
-	GroupFile.SetBuffer( Data.GetData( ), Data.GetDataSize( ) );
+	Data.SetData(GroupFile.m_Buffer, GroupFile.GetFileSize());
+	Data.Encrypt();
+	GroupFile.SetBuffer(Data.GetData(), Data.GetDataSize());
 
-	GroupFile.WriteToFile( m_FileName );
+	GroupFile.WriteToFile(m_FileName);
 }

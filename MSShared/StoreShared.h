@@ -1,21 +1,29 @@
-struct containeritem_t  : public genericitem_t
+struct containeritem_t : public genericitem_t
 {
-	containeritem_t( ) { }
-	containeritem_t( genericitem_t&Item );
-	containeritem_t( class CGenericItem *pItem );
-	void init( class CGenericItem *pItem );
+	containeritem_t() { }
+	containeritem_t(genericitem_t&Item);
+	containeritem_t(class CGenericItem *pItem);
+	void init(class CGenericItem *pItem);
 
 	string_i SpriteName;
-	msstring FullName;
+
 	msstring DebugName;					//Remove
 	bool Disabled;
-	int Value;
+	int Value, SpriteFrame; //Shuriken FEB2008 SpriteFrame
+	msstring Desc; // MiB - Description for inventory panel
+	msstring getFullName();
+	void setFullName(msstring name);
+
+private:
+	bool bForceFull;
+	msstring FullName;
+	CGenericItem *pOrig;
 };
 
 struct storeitem_t : public containeritem_t
 {
-	storeitem_t( ) { }
-	storeitem_t( class CGenericItem *pItem );
+	storeitem_t() { }
+	storeitem_t(class CGenericItem *pItem);
 	int iCost, iBundleAmt;
 	float flSellRatio;
 };

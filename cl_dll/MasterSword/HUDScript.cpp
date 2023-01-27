@@ -82,7 +82,7 @@ void CHudScript::Reset( void )
 void CHudScript::InitHUDData( void )
 {
 	int scriptnum = m_Scripts.size();
-	foreach( i, scriptnum )
+	 for (int i = 0; i < scriptnum; i++) 
 		Script_Remove( 0 );
 }
 
@@ -106,22 +106,22 @@ int CHudScript::MsgFunc_ClientScript( const char *pszName, int iSize, void *pbuf
 	{	
 		msstring ScriptName = READ_STRING( );
 		int iParameters = READ_BYTE( );
-		foreach( i, iParameters ) Parameters.add( READ_STRING() );
+		for (int i = 0; i < iParameters; i++) Parameters.add(READ_STRING());
 		CScript *Script = CreateScript( ScriptName, Parameters, true, ID );
 	}
 	else if( Action == 1 )	//Send Msg to Script
 	{
 		int iParameters = READ_BYTE( );
 		msstring EventName = READ_STRING( );	//First parameter is the eventname
-		foreach( i, iParameters-1 ) Parameters.add( READ_STRING() );
+		for (int i = 0; i < (iParameters - 1); i++) Parameters.add(READ_STRING());
 
-		foreach( i, m_Scripts.size() )
+		 for (int i = 0; i < m_Scripts.size(); i++) 
 		{
 			CScript *Script = m_Scripts[i];
 			if( Script->m.UniqueID != ID )
 				continue;
 
-			foreach( p, Parameters.size() )
+			 for (int p = 0; p < Parameters.size(); p++) 
 				Script->SetVar( msstring("PARAM") + (p+1), Parameters[p] );
 			Script->RunScriptEventByName( EventName, Parameters.size() ? &Parameters : NULL );
 			break;
@@ -129,7 +129,7 @@ int CHudScript::MsgFunc_ClientScript( const char *pszName, int iSize, void *pbuf
 	}
 	else	//Remove script
 	{
-		foreach( i, m_Scripts.size() )
+		 for (int i = 0; i < m_Scripts.size(); i++) 
 		{
 			if( m_Scripts[i]->m.UniqueID != ID )
 				continue;
@@ -148,7 +148,7 @@ CScript *CHudScript::CreateScript( msstring_ref ScriptName, msstringlist &Parame
 	if( !AllowDupe )
 	{
 		int events = m_Scripts.size();
-		foreach( i, events )
+		 for (int i = 0; i < events; i++) 
 			if( strstr( m_Scripts[i]->m.ScriptFile, ScriptName ) )
 			{
 				UniqueID = m_Scripts[i]->m.UniqueID;
@@ -185,7 +185,7 @@ void CHudScript::HandleAnimEvent( msstring_ref Options, const cl_entity_s *clEnt
 	if( Type == HAE_EITHER || Type == HAE_ATTACH )
 	{
 		int events = m_Scripts.size( );
-		foreach( i, events )
+		 for (int i = 0; i < events; i++) 
 			if( strstr( m_Scripts[i]->m.ScriptFile, ScriptName ) )
 				{ Script = m_Scripts[i]; break; }
 	}
@@ -202,7 +202,7 @@ void CHudScript::HandleAnimEvent( msstring_ref Options, const cl_entity_s *clEnt
 
 	static msstringlist Params;
 	Params.clearitems( );
-	foreach( i, ParsedOptions.size() - 2 )
+	 for (int i = 0; i < ParsedOptions.size()-2; i++) 
 		Params.add( ParsedOptions[i+2] );
 
 	Script->RunScriptEventByName( EventName, &Params );
@@ -210,7 +210,7 @@ void CHudScript::HandleAnimEvent( msstring_ref Options, const cl_entity_s *clEnt
 
 void CHudScript::Effects_GetView( ref_params_s *pparams, cl_entity_t *ViewModel )
 {
-	foreach( i, m_Scripts.size() )
+	 for (int i = 0; i < m_Scripts.size(); i++) 
 	{
 		CScript *Script = m_Scripts[i];
 		Vector &ViewOfs = *(Vector *)&pparams->vieworg;
@@ -226,7 +226,7 @@ void CHudScript::Effects_GetView( ref_params_s *pparams, cl_entity_t *ViewModel 
 Vector CHudScript::Effects_GetMoveScale( )
 {
 	Vector NewScale( 1.0f, 1.0f, 1.0f );
-	foreach( i, m_Scripts.size() )
+	 for (int i = 0; i < m_Scripts.size(); i++) 
 	{
 		CScript *Script = m_Scripts[i];
 		if( Script->VarExists( "game.cleffect.move_scale.forward" ) ) NewScale.x *= atof(Script->GetVar( "game.cleffect.move_scale.forward" ));
@@ -239,7 +239,7 @@ Vector CHudScript::Effects_GetMoveScale( )
 Vector CHudScript::Effects_GetMove( Vector &OriginalMove )
 {
 	Vector NewMove = OriginalMove;
-	foreach( i, m_Scripts.size() )
+	 for (int i = 0; i < m_Scripts.size(); i++) 
 	{
 		CScript *Script = m_Scripts[i];
 		NewMove.x += atof(Script->GetVar( "game.cleffect.move_ofs.forward" ));
@@ -254,7 +254,7 @@ void CHudScript::Effects_GetFade( screenfade_t &ScreenFade )
 {
 	float OldScreenAlpha = ScreenFade.fadealpha;
 	ScreenFade.fadeFlags = 0;
-	foreach( i, m_Scripts.size() )
+	 for (int i = 0; i < m_Scripts.size(); i++) 
 	{
 		CScript *Script = m_Scripts[i];
 		if( !atoi(Script->GetVar( "game.cleffect.screenfade.newfade" )) )
@@ -285,14 +285,14 @@ void CHudScript::Effects_GetFade( screenfade_t &ScreenFade )
 }
 void CHudScript::Effects_PreRender( )
 {
-	foreach( i, m_Scripts.size() )
+	 for (int i = 0; i < m_Scripts.size(); i++) 
 		if( m_Scripts[i]->m.m_HandleRender )
 			m_Scripts[i]->RunScriptEventByName( "game_prerender" );
 }
 
 void CHudScript::Effects_Render( cl_entity_t &Ent, bool InMirror )
 {
-	foreach( i, m_Scripts.size() )
+	 for (int i = 0; i < m_Scripts.size(); i++) 
 		if( m_Scripts[i]->m.m_HandleRender )
 		{
 			static msstringlist Params;
@@ -305,7 +305,7 @@ void CHudScript::Effects_Render( cl_entity_t &Ent, bool InMirror )
 
 void CHudScript::Effects_DrawTransPararentTriangles( )
 {
-	foreach( i, m_Scripts.size() )
+	 for (int i = 0; i < m_Scripts.size(); i++) 
 		if( m_Scripts[i]->m.m_HandleRender )
 			m_Scripts[i]->RunScriptEventByName( "game_render_transparent" );
 }

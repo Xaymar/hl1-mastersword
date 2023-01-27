@@ -16,7 +16,7 @@ void Action_ClickCheck::actionPerformed(Panel* panel)
 
 struct bitmapresource_t {
 	BitmapTGA *m_TGA;
-	HSPRITE m_Sprite;
+	HLSPRITE m_Sprite;
 	msstring sImageName;
 	bool m_TGAorSprite;
 };
@@ -32,7 +32,7 @@ BitmapTGA *MSBitmap::GetTGA( const char *pszImageName )
 		return NULL;
 
 	dbg( "Find Existing Image" );
-	foreach( i, g_Bitmaps.size( ) )
+	 for (int i = 0; i < g_Bitmaps.size(); i++) 
 	{
 		if( g_Bitmaps[i].m_TGAorSprite && !strcmp(g_Bitmaps[i].sImageName, pszImageName) )
 			return g_Bitmaps[i].m_TGA;							//Return existing TGA
@@ -52,13 +52,13 @@ BitmapTGA *MSBitmap::GetTGA( const char *pszImageName )
 
 	return Bitmap.m_TGA;
 }
-HSPRITE MSBitmap::GetSprite( const char *pszImageName )
+HLSPRITE MSBitmap::GetSprite(const char *pszImageName)
 {
 	//Return existing sprite, or load from file
 	if( !pszImageName )
 		return NULL;
 
-	foreach( i, g_Bitmaps.size( ) )
+	 for (int i = 0; i < g_Bitmaps.size(); i++) 
 		if( !g_Bitmaps[i].m_TGAorSprite && !strcmp(g_Bitmaps[i].sImageName, pszImageName) )
 			return g_Bitmaps[i].m_Sprite;						//Return existing Sprite
 
@@ -73,17 +73,17 @@ HSPRITE MSBitmap::GetSprite( const char *pszImageName )
 
 	return Bitmap.m_Sprite;
 }
-HSPRITE MSBitmap::LoadSprite( const char *pszImageName )
+HLSPRITE MSBitmap::LoadSprite(const char *pszImageName)
 {
 	//Load new sprite from file
-	HSPRITE Sprite = SPR_Load( msstring("sprites/") + pszImageName + ".spr" );
+	HLSPRITE Sprite = SPR_Load(msstring("sprites/") + pszImageName + ".spr");
 	if( !Sprite ) Sprite = gHUD.GetSprite( gHUD.GetSpriteIndex(pszImageName) );
 	return Sprite;
 }
 void MSBitmap::ReloadSprites( )
 {
 	//Reload sprites after a video or level change
-	foreach( i, g_Bitmaps.size( ) )
+	 for (int i = 0; i < g_Bitmaps.size(); i++) 
 		if( !g_Bitmaps[i].m_TGAorSprite )
 			g_Bitmaps[i].m_Sprite = LoadSprite( g_Bitmaps[i].sImageName );
 }
@@ -165,7 +165,7 @@ void CImageDelayed::paintBackground()
 		Parent->localToScreen( parentcoords[0], parentcoords[1] );
 		Parent->getSize( parentsize[0], parentsize[1] );
 
-		foreach( c, 2 )
+		 for (int c = 0; c < 2; c++) 
 		{
 			int startofs = coords[c] - parentcoords[c];
 			if( startofs < 0 && ClipBeg[c] < -startofs )
@@ -344,7 +344,7 @@ VGUI_ItemButton::VGUI_ItemButton( int x, int y, VGUI_ItemCallbackPanel *pCallbac
 	m_Image.setParent( this );
 
 	//Set the label
-	foreach( i, ITEMBTN_LABELS_MAX )
+	 for (int i = 0; i < ITEMBTN_LABELS_MAX; i++) 
 		m_Labels[i] = new MSLabel( this, "Item", 0, 0, 1, 1, MSLabel::a_center );
 
 	m_Description = new TextPanel( "", 0, 0, 1, 1 );
@@ -365,7 +365,7 @@ VGUI_ItemButton::VGUI_ItemButton( int x, int y, VGUI_ItemCallbackPanel *pCallbac
 	m_Button->removeInputSignal( m_Signal );
 	removeChild( m_Button );
 
-	foreach( i, ITEMBTN_LABELS )
+	 for (int i = 0; i < ITEMBTN_LABELS; i++) 
 	{
 		removeChild( Labels[i] );
 		delete Labels[i];
@@ -414,7 +414,7 @@ void VGUI_ItemButton::Update( )
 		int lblx, lbly;
 		int w, h;
 
-		foreach( i, ITEMBTN_LABELS_MAX )
+		 for (int i = 0; i < ITEMBTN_LABELS_MAX; i++) 
 		{
 			switch( i )
 			{
@@ -504,8 +504,7 @@ void VGUI_ItemButton::Highlight( bool fSelect )
 {
 	m_Highlighted = fSelect;
 	if( m_CallbackPanel ) m_CallbackPanel->ItemHighlighted( this );
-	if( !m_Highlighted )
-		int stop = 0;
+	//if( !m_Highlighted )
 }
 
 void VGUI_ItemButton::paint( )
@@ -541,7 +540,7 @@ void VGUI_ItemButton::paint( )
 	}
 
 	m_Image.SetFGColorRGB( ImageColor );
-	foreach( i, ITEMBTN_LABELS_MAX )
+	 for (int i = 0; i < ITEMBTN_LABELS_MAX; i++) 
 		m_Labels[i]->SetFGColorRGB( LabelColor );
 	m_Description->SetFGColorRGB( LabelColor );
 }
@@ -648,7 +647,7 @@ VGUI_ItemButton *VGUI_Container::AddItem( containeritem_t &Item )
 
 void VGUI_Container::Update( )
 {
-	foreach( i, m_ItemButtonTotal )
+	 for (int i = 0; i < m_ItemButtonTotal; i++) 
 	{
 		m_ItemButtons[i]->Update( );
 		UpdatePosition( i );
@@ -710,7 +709,7 @@ void VGUI_Container::UpdatePosition( int idx )
 void VGUI_Container::PurgeButtons( )
 {
 	//Reset the old buttons
-	foreach( i, m_ItemButtonTotal )
+	 for (int i = 0; i < m_ItemButtonTotal; i++) 
 		m_ItemButtons[i]->Reset( );
 
 	m_ItemButtonTotal = 0;

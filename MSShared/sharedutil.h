@@ -32,9 +32,7 @@ public:
 };
 
 #define MACRO_CREATEITEM( item ) (CBaseEntity *)GET_PRIVATE(CREATE_NAMED_ENTITY(MAKE_STRING(item)))
-#define foreach( var, max ) for( int var = 0; var < (signed)max; var++ )	//variable declared
-#define Foreach( var, max ) for( var = 0; var < (signed)max; var++ )		//variable not declared
-#define clrmem( a ) memset( &a, 0, sizeof(a) );
+//#define clrmem( a ) memset( &a, 0, sizeof(a) );
 int numofdigits( int x );
 void Print( char *szFmt, ... );
 #define FloatToString( a ) UTIL_VarArgs( "%.2f", a )
@@ -61,9 +59,9 @@ void Print( char *szFmt, ... );
 	Vector GetRelativePos( Vector &Ang, Vector &Dir );	//Uses Dir.x for right-left, Dir.y for forward-back, and Dir.z as up-down, relative to the angle
 #endif
 
-#define ENT_PREFIX "PentP"
-msstring EntToString( class CBaseEntity *pEntity );			//Converts an entity to a string of format "PentP(idx,addr)"
-CBaseEntity *StringToEnt( msstring_ref EntString);			//Converts an string of format "PentP(idx,addr)" to an entity
+#define ENT_PREFIX "ï¿½Pentï¿½P"
+msstring EntToString( class CBaseEntity *pEntity );			//Converts an entity to a string of format "ï¿½Pentï¿½P(idx,addr)"
+CBaseEntity *StringToEnt( msstring_ref EntString);			//Converts an string of format "ï¿½Pentï¿½P(idx,addr)" to an entity
 
 
 void WRITE_FLOAT( float Float );
