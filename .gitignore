@@ -1,0 +1,20 @@
+/build
+
+# Binary Files
+*.exe
+*.dll
+*.lib
+*.obj
+*.o
+*.a
+
+# Project Files
+*/.vs
+*.sln
+*.suo
+*.vcproj
+*.vcproj.user
+*.vcproj.filters
+*.vcxproj
+*.vcxproj.user
+*.vcxproj.filters
