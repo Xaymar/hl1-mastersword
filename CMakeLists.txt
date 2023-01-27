@@ -5,3 +5,5 @@ include("cmake/clang/Clang.cmake")
 project(
 	"Master Sword Re-Continued"
 )
+
+add_subdirectory("scripttool")
