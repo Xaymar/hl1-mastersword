@@ -59,7 +59,7 @@ jobs:
             CMAKE_GENERATOR: "Ninja"
 
     runs-on: "${{ matrix.runner }}"
-    name: "${{ matrix.name }} (${{ matrix.generator }}, Qt${{ matrix.qt }})"
+    name: "${{ matrix.name }} (${{ matrix.generator }})"
     env:
       CMAKE_GENERATOR: "${{ matrix.CMAKE_GENERATOR }}"
       CMAKE_GENERATOR_PLATFORM: "${{ matrix.CMAKE_GENERATOR_PLATFORM }}"
@@ -211,7 +211,7 @@ jobs:
         name: "${{ matrix.runner }}-${{ matrix.generator }}"
         path: "${{ github.workspace }}/build/release"
 
-    - name: "Validate Formatting"
+    - name: "Validate clang-format"
       shell: bash
       run: |
         cmake --build "${{ github.workspace }}/build/debug" --config Debug --target clang-format
@@ -220,7 +220,7 @@ jobs:
         git update-index --refresh
         git diff-index --quiet HEAD --
 
-    - name: "clang-tidy"
+    - name: "Validate clang-tidy"
       continue-on-error: true
       shell: bash
       run: |
