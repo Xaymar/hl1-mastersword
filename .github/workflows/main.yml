@@ -113,7 +113,7 @@ jobs:
       run: |
         brew install llvm@14
         LLVM_LOC=$(brew --prefix llvm@14)
-        echo "CLANG_PATH=${LLVM_LOC}/usr/bin/" >> "${GITHUB_ENV}"
+        echo "CLANG_PATH=${LLVM_LOC}/bin/" >> "${GITHUB_ENV}"
 
     - name: "Install Compiler (Ubuntu)"
       if: startsWith( matrix.runner, 'ubuntu' )
