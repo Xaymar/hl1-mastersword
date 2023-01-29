@@ -10,6 +10,7 @@
 
 #include "ms_groupfile.hpp"
 #include <stdexcept>
+#include <vector>
 
 ms::groupfile::groupfile() {}
 

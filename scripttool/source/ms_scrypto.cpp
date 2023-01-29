@@ -10,6 +10,7 @@
 
 #include "ms_scrypto.hpp"
 #include <stdexcept>
+#include <cstring>
 
 ms::scrypto::scrypto() {}
 
