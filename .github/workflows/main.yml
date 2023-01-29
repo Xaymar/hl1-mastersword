@@ -164,7 +164,7 @@ jobs:
           -DCMAKE_SYSTEM_VERSION="${{ matrix.CMAKE_SYSTEM_VERSION }}" \
           -DCMAKE_BUILD_TYPE="${{ env.CMAKE_BUILD_TYPE }}" \
           -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/build/debug" \
-          -DENABLE_CLANG=TRUE -DCLANG_PATH="${{ env.CLANG_PATH }}"
+          -DENABLE_CLANG=TRUE
         if [[ "${{ matrix.runner }}" = windows* ]]; then
           cmake --build "build/debug" --config ${{ env.CMAKE_BUILD_TYPE }} --target install
         elif [[ "${{ matrix.runner }}" = ubuntu* ]]; then
@@ -196,7 +196,7 @@ jobs:
           -DCMAKE_SYSTEM_VERSION="${{ matrix.CMAKE_SYSTEM_VERSION }}" \
           -DCMAKE_BUILD_TYPE="${{ env.CMAKE_BUILD_TYPE }}" \
           -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/build/release" \
-          -DENABLE_CLANG=TRUE -DCLANG_PATH="${{ env.CLANG_PATH }}"
+          -DENABLE_CLANG=TRUE
         if [[ "${{ matrix.runner }}" = windows* ]]; then
           cmake --build "build/release" --config ${{ env.CMAKE_BUILD_TYPE }} --target install
         elif [[ "${{ matrix.runner }}" = ubuntu* ]]; then
