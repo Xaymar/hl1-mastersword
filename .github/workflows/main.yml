@@ -99,6 +99,7 @@ jobs:
     - name: "Install LLVM/Clang (Ubuntu)"
       if: startsWith( matrix.runner, 'ubuntu' )
       shell: bash
+      run: |
         curl -jLo /tmp/llvm.sh "https://apt.llvm.org/llvm.sh"
         chmod +x /tmp/llvm.sh
         sudo /tmp/llvm.sh 14 all
