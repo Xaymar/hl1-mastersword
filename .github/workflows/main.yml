@@ -111,9 +111,10 @@ jobs:
       if: startsWith( matrix.runner, 'macos' )
       shell: bash
       run: |
-        # LLVM
         brew install llvm@14
-        echo "CLANG_PATH=$(brew --prefix llvm@14)/bin/" >> "${GITHUB_ENV}"
+        LLVM_LOC=$(brew --prefix llvm@14)
+        ls -lha -R "${LLVM_LOC}"
+        echo "CLANG_PATH=${LLVM_LOC}/bin/" >> "${GITHUB_ENV}"
 
     - name: "Install Compiler (Ubuntu)"
       if: startsWith( matrix.runner, 'ubuntu' )
