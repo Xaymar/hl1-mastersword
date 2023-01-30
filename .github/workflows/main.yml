@@ -89,33 +89,20 @@ jobs:
           echo "cmake_generator_platform=-A \"${{ matrix.CMAKE_GENERATOR_PLATFORM }}\"" >> $GITHUB_ENV
         fi
 
-    - name: "Install LLVM/Clang (Windows)"
-      if: startsWith( matrix.runner, 'windows' )
-      run: |
-        curl "-kL" "https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.4/LLVM-14.0.4-win64.exe" "-f" "--retry" "5" "-o" "llvm.exe"
-        7z x -y -o"C:\Program Files\LLVM" llvm.exe "bin" "include" "lib" "libexec" "share" "Uninstall.exe"
-        echo "CLANG_PATH=\"C:\\Program Files\\LLVM\\bin\"" >> "${GITHUB_ENV}"
+        # Compiler Setup
+        if [[ "${{ matrix.runner }}" = ubuntu* ]]; then
+          if [[ "${{ matrix.generator }}" = "GCC" ]]; then
+            echo "CC=gcc-10" >> "${GITHUB_ENV}"
+            echo "CXX=g++-10" >> "${GITHUB_ENV}"
+            echo "LD=ld" >> "${GITHUB_ENV}"
+          elif [[ "${{ matrix.generator }}" = "Clang" ]]; then
+            echo "CC=clang-14" >> "${GITHUB_ENV}"
+            echo "CXX=clang++-14" >> "${GITHUB_ENV}"
+            echo "LD=lld" >> "${GITHUB_ENV}"
+          fi
+        fi
 
-    - name: "Install LLVM/Clang (Ubuntu)"
-      if: startsWith( matrix.runner, 'ubuntu' )
-      shell: bash
-      run: |
-        curl -jLo /tmp/llvm.sh "https://apt.llvm.org/llvm.sh"
-        chmod +x /tmp/llvm.sh
-        sudo /tmp/llvm.sh 14 all
-        sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-14 800
-        sudo update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-14 800
-        echo "CLANG_PATH=/usr/bin" >> "${GITHUB_ENV}"
-
-    - name: "Install LLVM/Clang (MacOS)"
-      if: startsWith( matrix.runner, 'macos' )
-      shell: bash
-      run: |
-        brew install llvm@14
-        LLVM_LOC=$(brew --prefix llvm@14)
-        echo "CLANG_PATH=${LLVM_LOC}/bin/" >> "${GITHUB_ENV}"
-
-    - name: "Install Compiler (Ubuntu)"
+    - name: "Install Build Tools (Ubuntu)"
       if: startsWith( matrix.runner, 'ubuntu' )
       shell: bash
       run: |
@@ -127,25 +114,39 @@ jobs:
           pkg-config \
           cmake \
           ninja-build \
-          git
+          git \
+          gcc-10 g++10
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 800 --slave /usr/bin/g++ g++ /usr/bin/g++-10
 
-        # Compiler
-        if [[ "${{ matrix.generator }}" = "GCC" ]]; then
-          sudo apt-get install gcc-10 g++10
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 800 --slave /usr/bin/g++ g++ /usr/bin/g++-10
-          echo "CC=gcc-10" >> "${GITHUB_ENV}"
-          echo "CXX=g++-10" >> "${GITHUB_ENV}"
-          echo "LD=ld" >> "${GITHUB_ENV}"
-        elif [[ "${{ matrix.generator }}" = "Clang" ]]; then
-          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-14 800
-          sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-14 800
-          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-14 800
-          sudo update-alternatives --install /usr/bin/lld lld /usr/bin/lld-14 800
-          sudo update-alternatives --install /usr/bin/lldb lldb /usr/bin/lldb-14 800
-          echo "CC=clang-14" >> "${GITHUB_ENV}"
-          echo "CXX=clang++-14" >> "${GITHUB_ENV}"
-          echo "LD=lld" >> "${GITHUB_ENV}"
-        fi
+    - name: "Install LLVM/Clang (Windows)"
+      if: startsWith( matrix.runner, 'windows' )
+      run: |
+        curl "-kL" "https://github.com/llvm/llvm-project/releases/download/llvmorg-14.0.4/LLVM-14.0.4-win64.exe" "-f" "--retry" "5" "-o" "llvm.exe"
+        7z x -y -o"C:\Program Files\LLVM" llvm.exe "bin" "include" "lib" "libexec" "share" "Uninstall.exe"
+        echo "CLANG_PATH=\"C:\\Program Files\\LLVM\\bin\"" >> "${GITHUB_ENV}"
+    - name: "Install LLVM/Clang (Ubuntu)"
+      if: startsWith( matrix.runner, 'ubuntu' )
+      shell: bash
+      run: |
+        wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
+        curl -jLo /tmp/llvm.sh "https://apt.llvm.org/llvm.sh"
+        chmod +x /tmp/llvm.sh
+        sudo /tmp/llvm.sh 14 all
+        sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-14 800 ^
+          --slave /usr/bin/clangd clangd /usr/bin/clangd-14 ^
+          --slave /usr/bin/clang++ clang++ /usr/bin/clang++-14 ^
+          --slave /usr/bin/lld lld /usr/bin/lld-14 ^
+          --slave /usr/bin/lldb lldb /usr/bin/lldb-14 800 ^
+          --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-14 ^
+          --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-14
+        echo "CLANG_PATH=/usr/bin" >> "${GITHUB_ENV}"
+    - name: "Install LLVM/Clang (MacOS)"
+      if: startsWith( matrix.runner, 'macos' )
+      shell: bash
+      run: |
+        brew install llvm@14
+        LLVM_LOC=$(brew --prefix llvm@14)
+        echo "CLANG_PATH=${LLVM_LOC}/bin/" >> "${GITHUB_ENV}"
 
     - name: "Configure & Build (Debug)"
       continue-on-error: true
@@ -155,7 +156,7 @@ jobs:
       run: |
         cmake \
           -S "${{ github.workspace }}" \
-          -B "${{ github.workspace }}/build/debug" \
+          -B "${{ github.workspace }}/../distrib/debug" \
           ${{ env.cmake_generator }} \
           ${{ env.cmake_generator_toolset }} \
           ${{ env.cmake_generator_platform }} \
@@ -175,13 +176,12 @@ jobs:
         elif [[ "${{ matrix.runner }}" = macos* ]]; then
           cmake --build "build/debug" --config ${{ env.CMAKE_BUILD_TYPE }} --target install
         fi
-
     - name: "Artifacts (Debug)"
       continue-on-error: true
       uses: actions/upload-artifact@v1
       with:
         name: "${{ matrix.runner }}-${{ matrix.generator }}-debug"
-        path: "${{ github.workspace }}/build/debug"
+        path: "${{ github.workspace }}/../distrib/debug"
 
     - name: "Configure & Build (Release)"
       shell: bash
@@ -190,7 +190,7 @@ jobs:
       run: |
         cmake \
           -S "${{ github.workspace }}" \
-          -B "${{ github.workspace }}/build/release" \
+          -B "${{ github.workspace }}/../distrib/release" \
           ${{ env.cmake_generator }} \
           ${{ env.cmake_generator_toolset }} \
           ${{ env.cmake_generator_platform }} \
@@ -210,12 +210,11 @@ jobs:
         elif [[ "${{ matrix.runner }}" = macos* ]]; then
           cmake --build "build/release" --config ${{ env.CMAKE_BUILD_TYPE }} --target install
         fi
-
     - name: "Artifacts (Release)"
       uses: actions/upload-artifact@v1
       with:
         name: "${{ matrix.runner }}-${{ matrix.generator }}"
-        path: "${{ github.workspace }}/build/release"
+        path: "${{ github.workspace }}/../distrib/release"
 
     - name: "Validate clang-format"
       shell: bash
@@ -225,7 +224,6 @@ jobs:
         git --no-pager diff --patch --minimal HEAD --
         git update-index --refresh
         git diff-index --quiet HEAD --
-
     - name: "Validate clang-tidy"
       continue-on-error: true
       shell: bash
