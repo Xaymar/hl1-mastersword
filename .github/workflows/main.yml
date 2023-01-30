@@ -156,7 +156,7 @@ jobs:
       run: |
         cmake \
           -S "${{ github.workspace }}" \
-          -B "${{ github.workspace }}/../distrib/debug" \
+          -B "${{ github.workspace }}/build/debug" \
           ${{ env.cmake_generator }} \
           ${{ env.cmake_generator_toolset }} \
           ${{ env.cmake_generator_platform }} \
@@ -167,7 +167,7 @@ jobs:
           -DCMAKE_OSX_DEPLOYMENT_TARGET="${{ matrix.CMAKE_OSX_DEPLOYMENT_TARGET }}" \
           -DCMAKE_SYSTEM_VERSION="${{ matrix.CMAKE_SYSTEM_VERSION }}" \
           -DCMAKE_BUILD_TYPE="${{ env.CMAKE_BUILD_TYPE }}" \
-          -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/build/debug" \
+          -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/../distrib/debug" \
           -DENABLE_CLANG=TRUE -DCLANG_PATH="${{ env.CLANG_PATH }}"
         if [[ "${{ matrix.runner }}" = windows* ]]; then
           cmake --build "build/debug" --config ${{ env.CMAKE_BUILD_TYPE }} --target install
@@ -190,7 +190,7 @@ jobs:
       run: |
         cmake \
           -S "${{ github.workspace }}" \
-          -B "${{ github.workspace }}/../distrib/release" \
+          -B "${{ github.workspace }}/build/release" \
           ${{ env.cmake_generator }} \
           ${{ env.cmake_generator_toolset }} \
           ${{ env.cmake_generator_platform }} \
@@ -201,7 +201,7 @@ jobs:
           -DCMAKE_OSX_DEPLOYMENT_TARGET="${{ matrix.CMAKE_OSX_DEPLOYMENT_TARGET }}" \
           -DCMAKE_SYSTEM_VERSION="${{ matrix.CMAKE_SYSTEM_VERSION }}" \
           -DCMAKE_BUILD_TYPE="${{ env.CMAKE_BUILD_TYPE }}" \
-          -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/build/release" \
+          -DCMAKE_INSTALL_PREFIX="${{ github.workspace }}/../distrib/release" \
           -DENABLE_CLANG=TRUE -DCLANG_PATH="${{ env.CLANG_PATH }}"
         if [[ "${{ matrix.runner }}" = windows* ]]; then
           cmake --build "build/release" --config ${{ env.CMAKE_BUILD_TYPE }} --target install
