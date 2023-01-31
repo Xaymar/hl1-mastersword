@@ -132,13 +132,13 @@ jobs:
         curl -jLo /tmp/llvm.sh "https://apt.llvm.org/llvm.sh"
         chmod +x /tmp/llvm.sh
         sudo /tmp/llvm.sh 14 all
-        sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-14 800 \
-          --slave /usr/bin/clangd clangd /usr/bin/clangd-14 \
-          --slave /usr/bin/clang++ clang++ /usr/bin/clang++-14 \
-          --slave /usr/bin/lld lld /usr/bin/lld-14 \
-          --slave /usr/bin/lldb lldb /usr/bin/lldb-14 \
-          --slave /usr/bin/clang-format clang-format /usr/bin/clang-format-14 \
-          --slave /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-14
+        sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-14 800
+        sudo update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-14 800
+        sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-14 800
+        sudo update-alternatives --install /usr/bin/lld lld /usr/bin/lld-14 800
+        sudo update-alternatives --install /usr/bin/lldb lldb /usr/bin/lldb-14 800
+        sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-14 800
+        sudo update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-14 800
         echo "CLANG_PATH=/usr/bin" >> "${GITHUB_ENV}"
     - name: "Install LLVM/Clang (MacOS)"
       if: startsWith( matrix.runner, 'macos' )
